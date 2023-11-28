@@ -188,19 +188,19 @@ def main() -> None:
 
     if query:
         search_results = search_for_articles(query)
-        progress_bar(amount_of_time=20, messages=progress_bar_map.get("search_for_articles"))
+        progress_bar(user_feedback=progress_bar_map.get("search_for_articles"))
 
         urls = find_the_best_article_urls(search_results, query)
-        progress_bar(amount_of_time=20, messages=progress_bar_map.get("find_the_best_article_urls"))
+        progress_bar(user_feedback=progress_bar_map.get("find_the_best_article_urls"))
 
         data = get_content_from_urls(urls)
-        progress_bar(amount_of_time=20, messages=progress_bar_map.get("get_content_from_urls"))
+        progress_bar(user_feedback=progress_bar_map.get("get_content_from_urls"))
 
         summaries = summarise_content(data, query)
-        progress_bar(amount_of_time=20, messages=progress_bar_map.get("summarise_content"))
+        progress_bar(user_feedback=progress_bar_map.get("summarise_content"))
 
         post = generate_reddit_post(summaries, query)
-        progress_bar(amount_of_time=20, messages=progress_bar_map.get("generate_reddit_post"))
+        progress_bar(user_feedback=progress_bar_map.get("generate_reddit_post"))
 
         with st.expander("Search results"):
             st.info(search_results)
