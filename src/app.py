@@ -12,8 +12,8 @@ from langchain.document_loaders import UnstructuredURLLoader
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 
-from utils.helper import progress_bar_map
-from utils.custom import css_code
+from ..utils.helper import progress_bar_map
+from ..utils.custom import css_code
 
 load_dotenv(find_dotenv())
 SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
