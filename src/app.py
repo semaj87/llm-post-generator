@@ -13,7 +13,7 @@ from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 
 from libs.helper import progress_bar_map
-from libs.custom import *
+from libs.custom import css_code
 
 load_dotenv(find_dotenv())
 SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
