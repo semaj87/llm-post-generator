@@ -12,7 +12,7 @@ from langchain.document_loaders import UnstructuredURLLoader
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 
-from libs.helper import messages
+from libs.helper import progress_bar_map
 from libs.custom import *
 
 load_dotenv(find_dotenv())
@@ -154,41 +154,19 @@ def generate_reddit_post(summaries: list, query: str) -> str:
     return reddit_post
 
 
-def progress_bar(amount_of_time: int, messages: dict[str, str]) -> None:
+def progress_bar(user_feedback: list[str], amount_of_time: int = 20) -> None:
     """
     This function is used to create a progress bar to improve the UX
+    :param user_feedback: messages to output with the progress bar
     :param amount_of_time: time taken to sleep
-    :param messages: messages to output with the progress bar
     :return: None
     """
-    with st.status("AI models hard at work...", expanded=True) as status:
-        st.write(messages[0])
+    with st.status("AI models hard at work", expanded=True) as status:
+        st.write(user_feedback[1])
         time.sleep(amount_of_time)
-        st.write(messages[1])
+        st.write(user_feedback[2])
         time.sleep(1)
-        st.write("AI models hard at work...")
-        time.sleep(1)
-        status.update(label="Download complete!", state="complete", expanded=False)
-
-        # st.write("Searching for the top article...")
-        # time.sleep(amount_of_time)
-        # st.write("Found URL.")
-        # time.sleep(1)
-        # st.write("Extracting content from the URL...")
-        # time.sleep(amount_of_time)
-        # st.write("Content extracted.")
-        # time.sleep(1)
-        # st.write("Summarising the content...")
-        # time.sleep(amount_of_time)
-        # st.write("Content summarised.")
-        # time.sleep(1)
-        # st.write("Generating the post...")
-        # time.sleep(amount_of_time)
-        # st.write("Post generated")
-        # time.sleep(1)
-        # st.write("AI models hard at work...")
-        # time.sleep(1)
-        # status.update(label="Download complete!", state="complete", expanded=False)
+        status.update(label=f"Download {user_feedback[0]} of 5 complete!", state="complete", expanded=False)
 
 
 def main() -> None:
@@ -208,29 +186,25 @@ def main() -> None:
     st.header("Generate a Reddit post")
     query = st.text_input("Enter a topic for the Reddit post")
 
-    messages = ["Searching for the top article...", "Found URL."]
-
     if query:
         search_results = search_for_articles(query)
-        progress_bar(amount_of_time=20, messages=messages)
+        progress_bar(amount_of_time=20, messages=progress_bar_map.get("search_for_articles"))
 
         urls = find_the_best_article_urls(search_results, query)
-        progress_bar(amount_of_time=20, messages=messages)
+        progress_bar(amount_of_time=20, messages=progress_bar_map.get("find_the_best_article_urls"))
 
         data = get_content_from_urls(urls)
-        progress_bar(amount_of_time=20, messages=messages)
+        progress_bar(amount_of_time=20, messages=progress_bar_map.get("get_content_from_urls"))
 
         summaries = summarise_content(data, query)
-        progress_bar(amount_of_time=20, messages=messages)
+        progress_bar(amount_of_time=20, messages=progress_bar_map.get("summarise_content"))
 
         post = generate_reddit_post(summaries, query)
-        progress_bar(amount_of_time=20, messages=messages)
-
-        progress_bar(20)
+        progress_bar(amount_of_time=20, messages=progress_bar_map.get("generate_reddit_post"))
 
         with st.expander("Search results"):
             st.info(search_results)
-        with st.expander("best urls"):
+        with st.expander("Best url"):
             st.info(urls)
         with st.expander("Data"):
             st.info(data)
